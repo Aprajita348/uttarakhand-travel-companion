@@ -5,12 +5,19 @@ import Card from "../components/Card";
 import Footer from "../components/Footer";
 import { Toaster } from "react-hot-toast";
 import ThemeToggle from "../components/ThemeToggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Input, Modal, Loader, Toast} from "../components/ui";
 
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [destinations, setDestinations] = useState([]);
+  useEffect(() => {
+  fetch("http://localhost:5000/api/destinations")
+    .then((res) => res.json())
+    .then((data) => setDestinations(data))
+    .catch((err) => console.error(err));
+}, []);
   return (
     <>
     
@@ -63,25 +70,13 @@ text="Search"
 </div>
 
       <div className="grid md:grid-cols-2 gap-4 p-6">
-        <Card
-          title="Nainital"
-          description="Beautiful lake city surrounded by mountains."
-        />
-
-        <Card
-          title="Mussoorie"
-          description="Queen of Hills with amazing views."
-        />
-
-        <Card
-          title="Rishikesh"
-          description="Yoga capital and adventure destination."
-        />
-
-        <Card
-          title="Kedarnath"
-          description="Famous pilgrimage destination in Uttarakhand."
-        />
+        {destinations.map((place) => (
+  <Card
+    key={place.id}
+    title={place.name}
+    description={place.description}
+  />
+))}
       </div>
 
       <Footer />
